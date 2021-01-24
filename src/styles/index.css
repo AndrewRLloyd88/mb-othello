@@ -1,5 +1,13 @@
 .App {
   font-family: sans-serif;
   text-align: center;
-  margin: 6rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.gameBoard {
+  justify-content: center;
+  width: 100%;
 }

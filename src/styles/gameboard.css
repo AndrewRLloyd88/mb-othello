@@ -1,0 +1,17 @@
+.row {
+  width: 50%;
+}
+
+table {
+  background: rgb(3, 3, 3);
+  border-spacing: 1px;
+  width: 500px;
+  height: 500px;
+  border: 2px solid black;
+}
+td {
+  background: rgb(34, 88, 2);
+  padding: 5px;
+  height: 50px;
+  width: 50px;
+}
