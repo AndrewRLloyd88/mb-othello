@@ -52,10 +52,11 @@ export default function GameBoard() {
   };
 
   //Helper functions that check each one of the turn players' tokens
-  const checkPosY = (pos, inactivePlayer) => {
+  const checkPosX = (pos, inactivePlayer) => {
     // console.log('checkingPosY');
     //count up to 0,row
     for (let i = pos[0]; i >= 0; i--) {
+      console.log(i);
       //if the next square is the opposite color
       if (playField[i][pos[1]] === `${inactivePlayer}`) {
         if (playField[i - 1][pos[1]] === 0) {
@@ -68,7 +69,7 @@ export default function GameBoard() {
     return null;
   };
 
-  const checkNegY = (pos, inactivePlayer) => {
+  const checkNegX = (pos, inactivePlayer) => {
     // console.log('checkingNegY');
     //count up to 8,row
     for (let i = pos[0]; i < 8; i++) {
@@ -86,7 +87,7 @@ export default function GameBoard() {
     return null;
   };
 
-  const checkNegX = (pos, inactivePlayer) => {
+  const checkPosY = (pos, inactivePlayer) => {
     // console.log('checkingNegX');
     //count down to col,0
     for (let i = pos[1]; i >= 0; i--) {
@@ -104,7 +105,7 @@ export default function GameBoard() {
     return null;
   };
 
-  const checkPosX = (pos, inactivePlayer) => {
+  const checkNegY = (pos, inactivePlayer) => {
     // console.log('checkingPosX');
     //count down to col,0
     for (let i = pos[1]; i < 8; i++) {
@@ -148,7 +149,7 @@ export default function GameBoard() {
 
   const checkNegDiag = (pos, inactivePlayer) => {
     console.log(inactivePlayer);
-    // console.log('checkingPosDiag');
+    // console.log('checkingNegDiag');
     //count down to col,0
     let x = pos[0];
     let y = pos[1];
@@ -156,7 +157,7 @@ export default function GameBoard() {
     console.log(x, y);
 
     //fix this needs a %
-    while (x < 8 && y > 1) {
+    while (x < 7) {
       x++;
       y--;
       console.log(x, y);

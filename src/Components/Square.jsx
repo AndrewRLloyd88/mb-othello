@@ -14,8 +14,8 @@ export default function Square(props) {
 
   return (
     <td
-      key={`${props.rowsidx}${props.squareidx}`}
-      id={`${props.rowsidx}${props.squareidx}`}
+      key={`${props.squareidx}${props.rowsidx}`}
+      id={`${props.squareidx}${props.rowsidx}`}
       isEmpty={squarestate.isEmpty}
       className={squarestate.legalMove ? 'legal' : null}
       playerPiece={squarestate.playerPiece}
