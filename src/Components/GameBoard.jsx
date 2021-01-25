@@ -14,7 +14,6 @@ export default function GameBoard() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
   const [legalPos, setLegalPos] = useState([]);
-  const legalPositions = [];
 
   useEffect(() => {
     if (legalPos.length === 0) {
@@ -184,23 +183,27 @@ export default function GameBoard() {
 
   //player places a piece based on square clicked
   const placePiece = (e) => {
+    const xy = e;
+    const x = parseInt(e[0]);
+    const y = parseInt(e[1]);
+
     //check the move is legal
+    for (const move of legalPos) {
+      if (move[0] === x && move[1] === y) {
+        //create a temporary copy of the playField
+        let tempPlayfield = playField;
+        //mark the square as playerPiece value
+        tempPlayfield[e[0]][e[1]] = 'B';
 
-    //does it neigbour an opposing piece in any axis
+        //need a function to get all squares in between pieces of that type
 
-    //create a temporary copy of the playField
-    let tempPlayfield = playField;
-    console.log(e);
-    //mark the square as playerPiece value
-    tempPlayfield[e[0]][e[1]] = 'B';
-
-    //need a function to get all squares in between pieces of that type
-
-    //set the playfield to the temporary array
-    setPlayField(tempPlayfield);
-    console.log(playField);
-    //set the individual state for the clicked square
-    checkSquares(e[0], e[1]);
+        //set the playfield to the temporary array
+        setPlayField(tempPlayfield);
+        console.log(playField);
+        //set the individual state for the clicked square
+        checkSquares(e[0], e[1]);
+      }
+    }
   };
 
   const checkSquares = (row, square) => {
