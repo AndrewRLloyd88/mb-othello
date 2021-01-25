@@ -10,7 +10,7 @@ export default function Square(props) {
 
   useEffect(() => {
     setSquareState(props.checkSquares(props.rowsidx, props.squareidx));
-  }, [props.legalPos]);
+  }, [props]);
 
   return (
     <td
@@ -21,9 +21,8 @@ export default function Square(props) {
       playerPiece={squarestate.playerPiece}
       onClick={(event) => {
         props.placePiece(event.target.id);
-        setSquareState(
-          props.checkSquares(props.rowsidx, props.squareidx, props.legalPos)
-        );
+        props.checkSquares(props.rowsidx, props.squareidx);
+        setSquareState(props.checkSquares(props.rowsidx, props.squareidx));
       }}
     >
       {!squarestate.isEmpty ? (

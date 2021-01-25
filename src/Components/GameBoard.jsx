@@ -16,19 +16,6 @@ export default function GameBoard() {
   const [legalPos, setLegalPos] = useState([]);
   const [currentPlayer, setCurrentPlayer] = useState(null);
 
-  useEffect(() => {
-    if (!currentPlayer) {
-      const startingPlayer = randomizeStartingPlayer();
-      setCurrentPlayer(startingPlayer);
-    }
-    if (currentPlayer && legalPos.length === 0) {
-      console.log(currentPlayer);
-      const legalMoves = checkLegalMoves();
-      console.log(legalMoves);
-      return setLegalPos(legalMoves);
-    }
-  }, [currentPlayer]);
-
   //picks a random starting player
   const randomizeStartingPlayer = () => {
     let num = Math.floor(Math.random() * 2 + 1);
@@ -211,11 +198,16 @@ export default function GameBoard() {
     console.log(x, y);
     for (let i = y; i >= 0; i--) {
       console.log(playField[i][x]);
+      if (playField[i][x] === `${inactivePlayer}`) {
+        piecesToFlip.push([i, x]);
+        console.log(piecesToFlip);
+      }
+      for (const pieces of piecesToFlip) {
+        field[pieces[0]][pieces[1]] = `${activePlayer}`;
+        console.log(field);
+      }
     }
-    if (playField[i][x] === `${inactivePlayer}`) {
-      piecesToFlip.push([i, x]);
-    }
-    return;
+    return field;
   };
 
   //player places a piece based on square clicked
@@ -236,23 +228,29 @@ export default function GameBoard() {
       if (move[0] === x && move[1] === y) {
         //create a temporary copy of the playField
         let tempPlayfield = playField;
+        let flippedPlayfield;
         //mark the square as playerPiece value
         tempPlayfield[e[1]][e[0]] = `${activePlayer}`;
-
         //need a function to get all squares in between pieces of that type
-        flipPositions(activePlayer, inactivePlayer, tempPlayfield, x, y);
+        flippedPlayfield = flipPositions(
+          activePlayer,
+          inactivePlayer,
+          tempPlayfield,
+          x,
+          y
+        );
 
         //set the playfield to the temporary array
-        setPlayField(tempPlayfield);
+        return setPlayField(flippedPlayfield);
         console.log(playField);
         //set the individual state for the clicked square
-        checkSquares(e[0], e[1]);
       }
     }
   };
 
   //check through all the squares to update their state
   const checkSquares = (square, row) => {
+    console.log(playField);
     if (playField[square][row] === 'W') {
       // console.log('White:', [i], [j]);
       return { isEmpty: false, playerPiece: 'white', legalMove: false };
@@ -269,6 +267,36 @@ export default function GameBoard() {
     return { isEmpty: true, playerPiece: null, legalMove: false };
   };
 
+  // const updateSquares = (x, y) => {
+  //   for (const i = 0; i < 8; i++) {
+  //     for (const j = 0; j < 8; j++) {
+  //       if (playField[i][j] === 'W') {
+  //         // console.log('White:', [i], [j]);
+  //         return { isEmpty: false, playerPiece: 'white', legalMove: false };
+  //       }
+  //       if (playField[i][j] === 'B') {
+  //         // console.log('Black:', [i], [j]);
+  //         return { isEmpty: false, playerPiece: 'black', legalMove: false };
+  //       }
+  //       }
+  //       return { isEmpty: true, playerPiece: null, legalMove: false };
+  //     }
+  //   }
+  // };
+
+  useEffect(() => {
+    if (!currentPlayer) {
+      const startingPlayer = randomizeStartingPlayer();
+      setCurrentPlayer(startingPlayer);
+    }
+    if (currentPlayer && legalPos.length === 0) {
+      console.log(currentPlayer);
+      const legalMoves = checkLegalMoves();
+      console.log(legalMoves);
+      return setLegalPos(legalMoves);
+    }
+  }, [currentPlayer, playField, checkSquares]);
+
   return (
     <>
       <table>
@@ -284,6 +312,7 @@ export default function GameBoard() {
                       checkSquares={checkSquares}
                       placePiece={placePiece}
                       legalPos={legalPos}
+                      playField={playField}
                     />
                   );
                 })}
