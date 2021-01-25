@@ -206,18 +206,15 @@ export default function GameBoard() {
   };
 
   const flipPositions = (activePlayer, inactivePlayer, field, x, y) => {
+    console.log('in flip');
     const piecesToFlip = [];
-    for (let i = x; i >= 0; i--) {
-      //if the next square is the opposite color
-      if (playField[i][y] === `${inactivePlayer}`) {
-        if (playField[i - 1][y] === `${activePlayer}`) {
-          // console.log('legal move posY');
-          piecesToFlip.push(i - 1, y);
-          console.log(piecesToFlip);
-        }
-      }
+    console.log(x, y);
+    for (let i = y; i >= 0; i--) {
+      console.log(playField[i][x]);
     }
-    console.log(field);
+    if (playField[i][x] === `${inactivePlayer}`) {
+      piecesToFlip.push([i, x]);
+    }
     return;
   };
 
@@ -232,14 +229,15 @@ export default function GameBoard() {
     );
     const x = parseInt(e[0]);
     const y = parseInt(e[1]);
-
+    console.log(x, y);
     //check the move is legal
     for (const move of legalPos) {
+      console.log(move[0], move[1]);
       if (move[0] === x && move[1] === y) {
         //create a temporary copy of the playField
         let tempPlayfield = playField;
         //mark the square as playerPiece value
-        tempPlayfield[e[0]][e[1]] = `${activePlayer}`;
+        tempPlayfield[e[1]][e[0]] = `${activePlayer}`;
 
         //need a function to get all squares in between pieces of that type
         flipPositions(activePlayer, inactivePlayer, tempPlayfield, x, y);
@@ -254,7 +252,7 @@ export default function GameBoard() {
   };
 
   //check through all the squares to update their state
-  const checkSquares = (row, square) => {
+  const checkSquares = (square, row) => {
     if (playField[square][row] === 'W') {
       // console.log('White:', [i], [j]);
       return { isEmpty: false, playerPiece: 'white', legalMove: false };
