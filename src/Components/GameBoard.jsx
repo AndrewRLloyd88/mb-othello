@@ -56,7 +56,6 @@ export default function GameBoard() {
     // console.log('checkingPosY');
     //count up to 0,row
     for (let i = pos[0]; i >= 0; i--) {
-      console.log(i);
       //if the next square is the opposite color
       if (playField[i][pos[1]] === `${inactivePlayer}`) {
         if (playField[i - 1][pos[1]] === 0) {
@@ -206,14 +205,30 @@ export default function GameBoard() {
     return legalMoves;
   };
 
-  const flipPositions = (activePlayer, field, x, y) => {
+  const flipPositions = (activePlayer, inactivePlayer, field, x, y) => {
+    const piecesToFlip = [];
+    for (let i = x; i >= 0; i--) {
+      //if the next square is the opposite color
+      if (playField[i][y] === `${inactivePlayer}`) {
+        if (playField[i - 1][y] === `${activePlayer}`) {
+          // console.log('legal move posY');
+          piecesToFlip.push(i - 1, y);
+          console.log(piecesToFlip);
+        }
+      }
+    }
     console.log(field);
+    return;
   };
 
   //player places a piece based on square clicked
   const placePiece = (e) => {
+    console.log(e);
     const activePlayer = Object.keys(currentPlayer).filter(
       (k) => currentPlayer[k]
+    );
+    const inactivePlayer = Object.keys(currentPlayer).filter(
+      (k) => !currentPlayer[k]
     );
     const x = parseInt(e[0]);
     const y = parseInt(e[1]);
@@ -227,7 +242,7 @@ export default function GameBoard() {
         tempPlayfield[e[0]][e[1]] = `${activePlayer}`;
 
         //need a function to get all squares in between pieces of that type
-        flipPositions(activePlayer, tempPlayfield, x, y);
+        flipPositions(activePlayer, inactivePlayer, tempPlayfield, x, y);
 
         //set the playfield to the temporary array
         setPlayField(tempPlayfield);
@@ -240,16 +255,16 @@ export default function GameBoard() {
 
   //check through all the squares to update their state
   const checkSquares = (row, square) => {
-    if (playField[row][square] === 'W') {
+    if (playField[square][row] === 'W') {
       // console.log('White:', [i], [j]);
       return { isEmpty: false, playerPiece: 'white', legalMove: false };
     }
-    if (playField[row][square] === 'B') {
+    if (playField[square][row] === 'B') {
       // console.log('Black:', [i], [j]);
       return { isEmpty: false, playerPiece: 'black', legalMove: false };
     }
     for (const position of legalPos) {
-      if (row === position[0] && square === position[1]) {
+      if (square === position[0] && row === position[1]) {
         return { isEmpty: true, playerPiece: null, legalMove: true };
       }
     }
