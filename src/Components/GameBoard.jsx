@@ -14,10 +14,14 @@ export default function GameBoard() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
   const [legalPos, setLegalPos] = useState([]);
+  const legalPositions = [];
 
   useEffect(() => {
-    setLegalPos(checkLegalMoves());
-    console.log(legalPos);
+    if (legalPos.length === 0) {
+      const legalMoves = checkLegalMoves();
+      console.log(legalMoves);
+      return setLegalPos(legalMoves);
+    }
   }, []);
 
   const checkDirections = (pos) => {
@@ -29,7 +33,6 @@ export default function GameBoard() {
     legalPositions.push(checkPosX(pos));
     legalPositions.push(checkPosDiag(pos));
     legalPositions.push(checkNegDiag(pos));
-    console.log(legalPositions);
     return legalPositions;
   };
 
@@ -156,6 +159,7 @@ export default function GameBoard() {
   const checkLegalMoves = () => {
     let startPos = [];
     let legalPos = [];
+    let legalMoves = [];
     //get current pieces of active player
     for (let i = 0; i < playField.length; i++) {
       for (let j = 0; j < playField[i].length; j++) {
@@ -167,9 +171,15 @@ export default function GameBoard() {
     startPos.forEach((pos) => {
       legalPos.push(checkDirections(pos));
     });
-    setLegalPos(legalPos);
-    console.log(legalPos);
-    return legalPos;
+
+    for (const position of legalPos) {
+      for (const lpos of position) {
+        if (lpos !== null) {
+          legalMoves.push(lpos);
+        }
+      }
+    }
+    return legalMoves;
   };
 
   //player places a piece based on square clicked
@@ -194,8 +204,6 @@ export default function GameBoard() {
   };
 
   const checkSquares = (row, square) => {
-    const legalMoves = checkLegalMoves();
-    console.log(legalMoves);
     if (playField[row][square] === 'W') {
       // console.log('White:', [i], [j]);
       return { isEmpty: false, playerPiece: 'white', legalMove: false };
@@ -203,6 +211,11 @@ export default function GameBoard() {
     if (playField[row][square] === 'B') {
       // console.log('Black:', [i], [j]);
       return { isEmpty: false, playerPiece: 'black', legalMove: false };
+    }
+    for (const position of legalPos) {
+      if (row === position[0] && square === position[1]) {
+        return { isEmpty: true, playerPiece: null, legalMove: true };
+      }
     }
     return { isEmpty: true, playerPiece: null, legalMove: false };
   };
@@ -220,6 +233,7 @@ export default function GameBoard() {
                     squareidx={squareidx}
                     checkSquares={checkSquares}
                     placePiece={placePiece}
+                    legalPos={legalPos}
                   />
                 );
               })}
