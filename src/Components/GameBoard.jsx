@@ -15,6 +15,7 @@ export default function GameBoard() {
   ]);
   const [legalPos, setLegalPos] = useState([]);
   const [currentPlayer, setCurrentPlayer] = useState(null);
+  const [flipPieces, setFlipPieces] = useState([]);
 
   //picks a random starting player
   const randomizeStartingPlayer = () => {
@@ -194,19 +195,20 @@ export default function GameBoard() {
 
   const flipPositions = (activePlayer, inactivePlayer, field, x, y) => {
     console.log('in flip');
-    const piecesToFlip = [];
+    const flipArray = [];
     console.log(x, y);
     for (let i = y; i >= 0; i--) {
       console.log(playField[i][x]);
       if (playField[i][x] === `${inactivePlayer}`) {
-        piecesToFlip.push([i, x]);
-        console.log(piecesToFlip);
+        flipArray.push([i, x]);
+        console.log(flipArray);
       }
-      for (const pieces of piecesToFlip) {
+      for (const pieces of flipArray) {
         field[pieces[0]][pieces[1]] = `${activePlayer}`;
         console.log(field);
       }
     }
+    setFlipPieces(flipArray);
     return field;
   };
 
@@ -242,7 +244,6 @@ export default function GameBoard() {
 
         //set the playfield to the temporary array
         return setPlayField(flippedPlayfield);
-        console.log(playField);
         //set the individual state for the clicked square
       }
     }
@@ -250,7 +251,7 @@ export default function GameBoard() {
 
   //check through all the squares to update their state
   const checkSquares = (square, row) => {
-    console.log(playField);
+    console.log(flipPieces);
     if (playField[square][row] === 'W') {
       // console.log('White:', [i], [j]);
       return { isEmpty: false, playerPiece: 'white', legalMove: false };
@@ -266,23 +267,6 @@ export default function GameBoard() {
     }
     return { isEmpty: true, playerPiece: null, legalMove: false };
   };
-
-  // const updateSquares = (x, y) => {
-  //   for (const i = 0; i < 8; i++) {
-  //     for (const j = 0; j < 8; j++) {
-  //       if (playField[i][j] === 'W') {
-  //         // console.log('White:', [i], [j]);
-  //         return { isEmpty: false, playerPiece: 'white', legalMove: false };
-  //       }
-  //       if (playField[i][j] === 'B') {
-  //         // console.log('Black:', [i], [j]);
-  //         return { isEmpty: false, playerPiece: 'black', legalMove: false };
-  //       }
-  //       }
-  //       return { isEmpty: true, playerPiece: null, legalMove: false };
-  //     }
-  //   }
-  // };
 
   useEffect(() => {
     if (!currentPlayer) {
