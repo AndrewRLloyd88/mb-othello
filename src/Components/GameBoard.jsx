@@ -14,34 +14,50 @@ export default function GameBoard() {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
   const [legalPos, setLegalPos] = useState([]);
+  const [currentPlayer, setCurrentPlayer] = useState(null);
 
   useEffect(() => {
-    if (legalPos.length === 0) {
+    if (!currentPlayer) {
+      const startingPlayer = randomizeStartingPlayer();
+      setCurrentPlayer(startingPlayer);
+    }
+    if (currentPlayer && legalPos.length === 0) {
+      console.log(currentPlayer);
       const legalMoves = checkLegalMoves();
       console.log(legalMoves);
       return setLegalPos(legalMoves);
     }
-  }, []);
+  }, [currentPlayer]);
 
-  const checkDirections = (pos) => {
+  //picks a random starting player
+  const randomizeStartingPlayer = () => {
+    let num = Math.floor(Math.random() * 2 + 1);
+    if (num < 2) {
+      return { W: true, B: false };
+    }
+    return { W: false, B: true };
+  };
+
+  //Helper that calls all the directional checks
+  const checkDirections = (pos, inactivePlayer) => {
     const legalPositions = [];
     //check +Y axis
-    legalPositions.push(checkPosY(pos));
-    legalPositions.push(checkNegY(pos));
-    legalPositions.push(checkNegX(pos));
-    legalPositions.push(checkPosX(pos));
-    legalPositions.push(checkPosDiag(pos));
-    legalPositions.push(checkNegDiag(pos));
+    legalPositions.push(checkPosY(pos, inactivePlayer));
+    legalPositions.push(checkNegY(pos, inactivePlayer));
+    legalPositions.push(checkNegX(pos, inactivePlayer));
+    legalPositions.push(checkPosX(pos, inactivePlayer));
+    legalPositions.push(checkPosDiag(pos, inactivePlayer));
+    legalPositions.push(checkNegDiag(pos, inactivePlayer));
     return legalPositions;
   };
 
   //Helper functions that check each one of the turn players' tokens
-  const checkPosY = (pos) => {
+  const checkPosY = (pos, inactivePlayer) => {
     // console.log('checkingPosY');
     //count up to 0,row
     for (let i = pos[0]; i >= 0; i--) {
       //if the next square is the opposite color
-      if (playField[i][pos[1]] === 'W') {
+      if (playField[i][pos[1]] === `${inactivePlayer}`) {
         if (playField[i - 1][pos[1]] === 0) {
           // console.log('legal move posY');
           return [i - 1, pos[1]];
@@ -52,13 +68,13 @@ export default function GameBoard() {
     return null;
   };
 
-  const checkNegY = (pos) => {
+  const checkNegY = (pos, inactivePlayer) => {
     // console.log('checkingNegY');
     //count up to 8,row
     for (let i = pos[0]; i < 8; i++) {
       // console.log(i);
       //if the next square is the opposite color
-      if (playField[i][pos[1]] === 'W') {
+      if (playField[i][pos[1]] === `${inactivePlayer}`) {
         // console.log('next square is W');
         if (playField[i + 1][pos[1]] === 0) {
           // console.log('legal move negY');
@@ -70,13 +86,13 @@ export default function GameBoard() {
     return null;
   };
 
-  const checkNegX = (pos) => {
+  const checkNegX = (pos, inactivePlayer) => {
     // console.log('checkingNegX');
     //count down to col,0
     for (let i = pos[1]; i >= 0; i--) {
       // console.log(pos[0], i);
       //if the next square is the opposite color
-      if (playField[pos[0]][i] === 'W') {
+      if (playField[pos[0]][i] === `${inactivePlayer}`) {
         // console.log('next square is W');
         if (playField[pos[0]][i - 1] === 0) {
           // console.log('legal move NegX');
@@ -88,13 +104,13 @@ export default function GameBoard() {
     return null;
   };
 
-  const checkPosX = (pos) => {
+  const checkPosX = (pos, inactivePlayer) => {
     // console.log('checkingPosX');
     //count down to col,0
     for (let i = pos[1]; i < 8; i++) {
       // console.log(pos[0], i);
       //if the next square is the opposite color
-      if (playField[pos[0]][i] === 'W') {
+      if (playField[pos[0]][i] === `${inactivePlayer}`) {
         // console.log('next square is W');
         if (playField[pos[0]][i + 1] === 0) {
           // console.log('legal move PosX');
@@ -106,7 +122,7 @@ export default function GameBoard() {
     return null;
   };
 
-  const checkPosDiag = (pos) => {
+  const checkPosDiag = (pos, inactivePlayer) => {
     // console.log('checkingPosDiag');
     //count down to col,0
     let x = pos[0];
@@ -118,7 +134,7 @@ export default function GameBoard() {
       x--;
       y++;
       // console.log(x, y);
-      if (playField[x][y] === 'W') {
+      if (playField[x][y] === `${inactivePlayer}`) {
         // console.log('next square is W');
         if (playField[x - 1][y + 1] === 0) {
           // console.log('legal move PosDiag');
@@ -130,19 +146,21 @@ export default function GameBoard() {
     return null;
   };
 
-  const checkNegDiag = (pos) => {
+  const checkNegDiag = (pos, inactivePlayer) => {
+    console.log(inactivePlayer);
     // console.log('checkingPosDiag');
     //count down to col,0
     let x = pos[0];
     let y = pos[1];
 
-    // console.log(x, y);
+    console.log(x, y);
 
-    while (x < 8 && y > 0) {
+    //fix this needs a %
+    while (x < 8 && y > 1) {
       x++;
       y--;
-      // console.log(x, y);
-      if (playField[x][y] === 'W') {
+      console.log(x, y);
+      if (playField[x][y] === `${inactivePlayer}`) {
         // console.log('next square is W');
         if (playField[x + 1][y - 1] === 0) {
           // console.log('legal move NegDiag');
@@ -156,19 +174,27 @@ export default function GameBoard() {
 
   //check active players legal moves based on current pieces
   const checkLegalMoves = () => {
+    const activePlayer = Object.keys(currentPlayer).filter(
+      (k) => currentPlayer[k]
+    );
+    const inactivePlayer = Object.keys(currentPlayer).filter(
+      (k) => !currentPlayer[k]
+    );
+    console.log(activePlayer);
+    console.log(inactivePlayer);
     let startPos = [];
     let legalPos = [];
     let legalMoves = [];
     //get current pieces of active player
     for (let i = 0; i < playField.length; i++) {
       for (let j = 0; j < playField[i].length; j++) {
-        if (playField[i][j] === 'B') {
+        if (playField[i][j] === `${activePlayer}`) {
           startPos.push([i, j]);
         }
       }
     }
     startPos.forEach((pos) => {
-      legalPos.push(checkDirections(pos));
+      legalPos.push(checkDirections(pos, inactivePlayer));
     });
 
     for (const position of legalPos) {
@@ -224,26 +250,31 @@ export default function GameBoard() {
   };
 
   return (
-    <table>
-      <tbody className="gameBoard">
-        {playField.map((rows, rowsidx) => {
-          return (
-            <tr key={rowsidx} className="row">
-              {rows.map((square, squareidx) => {
-                return (
-                  <Square
-                    rowsidx={rowsidx}
-                    squareidx={squareidx}
-                    checkSquares={checkSquares}
-                    placePiece={placePiece}
-                    legalPos={legalPos}
-                  />
-                );
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <>
+      <table>
+        <tbody className="gameBoard">
+          {playField.map((rows, rowsidx) => {
+            return (
+              <tr key={rowsidx} className="row">
+                {rows.map((square, squareidx) => {
+                  return (
+                    <Square
+                      rowsidx={rowsidx}
+                      squareidx={squareidx}
+                      checkSquares={checkSquares}
+                      placePiece={placePiece}
+                      legalPos={legalPos}
+                    />
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <div>
+        Current Player: {currentPlayer && currentPlayer.W ? 'White' : 'Black'}
+      </div>
+    </>
   );
 }
