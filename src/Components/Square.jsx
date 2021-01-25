@@ -5,6 +5,7 @@ export default function Square(props) {
   const [squarestate, setSquareState] = useState({
     isEmpty: true,
     playerPiece: null,
+    legalMove: false,
   });
 
   useEffect(() => {
@@ -19,7 +20,9 @@ export default function Square(props) {
       playerPiece={squarestate.playerPiece}
       onClick={(event) => {
         props.placePiece(event.target.id);
-        setSquareState(props.checkSquares(props.rowsidx, props.squareidx));
+        setSquareState(
+          props.checkSquares(props.rowsidx, props.squareidx, props.legalPos)
+        );
       }}
     >
       {!squarestate.isEmpty ? (

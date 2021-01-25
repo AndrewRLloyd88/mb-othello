@@ -16,140 +16,147 @@ export default function GameBoard() {
   const [legalPos, setLegalPos] = useState([]);
 
   useEffect(() => {
-    checkLegalMoves();
+    setLegalPos(checkLegalMoves());
+    console.log(legalPos);
   }, []);
 
   const checkDirections = (pos) => {
+    const legalPositions = [];
     //check +Y axis
-    checkPosY(pos);
-    checkNegY(pos);
-    checkNegX(pos);
-    checkPosX(pos);
-    checkPosDiag(pos);
-    checkNegDiag(pos);
+    legalPositions.push(checkPosY(pos));
+    legalPositions.push(checkNegY(pos));
+    legalPositions.push(checkNegX(pos));
+    legalPositions.push(checkPosX(pos));
+    legalPositions.push(checkPosDiag(pos));
+    legalPositions.push(checkNegDiag(pos));
+    console.log(legalPositions);
+    return legalPositions;
   };
 
+  //Helper functions that check each one of the turn players' tokens
   const checkPosY = (pos) => {
-    console.log('checkingPosY');
+    // console.log('checkingPosY');
     //count up to 0,row
     for (let i = pos[0]; i >= 0; i--) {
       //if the next square is the opposite color
       if (playField[i][pos[1]] === 'W') {
         if (playField[i - 1][pos[1]] === 0) {
-          console.log('legal move posY');
-          return [i] & pos[1];
+          // console.log('legal move posY');
+          return [i - 1, pos[1]];
         }
       }
     }
-    console.log('no legal move posY');
+    // console.log('no legal move posY');
     return null;
   };
 
   const checkNegY = (pos) => {
-    console.log('checkingNegY');
+    // console.log('checkingNegY');
     //count up to 8,row
     for (let i = pos[0]; i < 8; i++) {
       // console.log(i);
       //if the next square is the opposite color
       if (playField[i][pos[1]] === 'W') {
-        console.log('next square is W');
+        // console.log('next square is W');
         if (playField[i + 1][pos[1]] === 0) {
-          console.log('legal move negY');
-          return [i] & pos[1];
+          // console.log('legal move negY');
+          return [i + 1, pos[1]];
         }
       }
     }
-    console.log('no legal move negY');
+    // console.log('no legal move negY');
     return null;
   };
 
   const checkNegX = (pos) => {
-    console.log('checkingNegX');
+    // console.log('checkingNegX');
     //count down to col,0
     for (let i = pos[1]; i >= 0; i--) {
-      console.log(pos[0], i);
+      // console.log(pos[0], i);
       //if the next square is the opposite color
       if (playField[pos[0]][i] === 'W') {
-        console.log('next square is W');
+        // console.log('next square is W');
         if (playField[pos[0]][i - 1] === 0) {
-          console.log('legal move NegX');
-          return pos[0] & [i];
+          // console.log('legal move NegX');
+          return [pos[0], i - 1];
         }
       }
     }
-    console.log('no legal move NegX');
+    // console.log('no legal move NegX');
     return null;
   };
 
   const checkPosX = (pos) => {
-    console.log('checkingPosX');
+    // console.log('checkingPosX');
     //count down to col,0
     for (let i = pos[1]; i < 8; i++) {
-      console.log(pos[0], i);
+      // console.log(pos[0], i);
       //if the next square is the opposite color
       if (playField[pos[0]][i] === 'W') {
-        console.log('next square is W');
+        // console.log('next square is W');
         if (playField[pos[0]][i + 1] === 0) {
-          console.log('legal move PosX');
-          return pos[0] & [i];
+          // console.log('legal move PosX');
+          return [pos[0], i + 1];
         }
       }
     }
-    console.log('no legal move PosX');
+    // console.log('no legal move PosX');
     return null;
   };
 
   const checkPosDiag = (pos) => {
-    console.log('checkingPosDiag');
+    // console.log('checkingPosDiag');
     //count down to col,0
     let x = pos[0];
     let y = pos[1];
 
-    console.log(x, y);
+    // console.log(x, y);
 
     while (x > 0 && y < 8) {
       x--;
       y++;
-      console.log(x, y);
+      // console.log(x, y);
       if (playField[x][y] === 'W') {
-        console.log('next square is W');
+        // console.log('next square is W');
         if (playField[x - 1][y + 1] === 0) {
-          console.log('legal move PosDiag');
-          return pos[x] & [y];
+          // console.log('legal move PosDiag');
+          return [x - 1, y + 1];
         }
       }
     }
-    console.log('no legal move PosDiag');
+    // console.log('no legal move PosDiag');
     return null;
   };
 
   const checkNegDiag = (pos) => {
-    console.log('checkingPosDiag');
+    // console.log('checkingPosDiag');
     //count down to col,0
     let x = pos[0];
     let y = pos[1];
 
-    console.log(x, y);
+    // console.log(x, y);
 
     while (x < 8 && y > 0) {
       x++;
       y--;
-      console.log(x, y);
+      // console.log(x, y);
       if (playField[x][y] === 'W') {
-        console.log('next square is W');
+        // console.log('next square is W');
         if (playField[x + 1][y - 1] === 0) {
-          console.log('legal move NegDiag');
-          return pos[x] & [y];
+          // console.log('legal move NegDiag');
+          return [x + 1, y - 1];
         }
       }
     }
-    console.log('no legal move NegDiag');
+    // console.log('no legal move NegDiag');
     return null;
   };
 
+  //check active players legal moves based on current pieces
   const checkLegalMoves = () => {
     let startPos = [];
-    //get current pieces of player
+    let legalPos = [];
+    //get current pieces of active player
     for (let i = 0; i < playField.length; i++) {
       for (let j = 0; j < playField[i].length; j++) {
         if (playField[i][j] === 'B') {
@@ -158,9 +165,11 @@ export default function GameBoard() {
       }
     }
     startPos.forEach((pos) => {
-      checkDirections(pos);
+      legalPos.push(checkDirections(pos));
     });
-    console.log(startPos);
+    setLegalPos(legalPos);
+    console.log(legalPos);
+    return legalPos;
   };
 
   //player places a piece based on square clicked
@@ -185,15 +194,17 @@ export default function GameBoard() {
   };
 
   const checkSquares = (row, square) => {
+    const legalMoves = checkLegalMoves();
+    console.log(legalMoves);
     if (playField[row][square] === 'W') {
       // console.log('White:', [i], [j]);
-      return { isEmpty: false, playerPiece: 'white' };
+      return { isEmpty: false, playerPiece: 'white', legalMove: false };
     }
     if (playField[row][square] === 'B') {
       // console.log('Black:', [i], [j]);
-      return { isEmpty: false, playerPiece: 'black' };
+      return { isEmpty: false, playerPiece: 'black', legalMove: false };
     }
-    return { isEmpty: true, playerPiece: null };
+    return { isEmpty: true, playerPiece: null, legalMove: false };
   };
 
   return (
