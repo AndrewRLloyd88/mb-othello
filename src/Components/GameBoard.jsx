@@ -180,8 +180,6 @@ export default function GameBoard() {
     const inactivePlayer = Object.keys(currentPlayer).filter(
       (k) => !currentPlayer[k]
     );
-    console.log(activePlayer);
-    console.log(inactivePlayer);
     let startPos = [];
     let legalPos = [];
     let legalMoves = [];
@@ -207,9 +205,15 @@ export default function GameBoard() {
     return legalMoves;
   };
 
+  const flipPositions = (activePlayer, field, x, y) => {
+    console.log(field);
+  };
+
   //player places a piece based on square clicked
   const placePiece = (e) => {
-    const xy = e;
+    const activePlayer = Object.keys(currentPlayer).filter(
+      (k) => currentPlayer[k]
+    );
     const x = parseInt(e[0]);
     const y = parseInt(e[1]);
 
@@ -219,9 +223,10 @@ export default function GameBoard() {
         //create a temporary copy of the playField
         let tempPlayfield = playField;
         //mark the square as playerPiece value
-        tempPlayfield[e[0]][e[1]] = 'B';
+        tempPlayfield[e[0]][e[1]] = `${activePlayer}`;
 
         //need a function to get all squares in between pieces of that type
+        flipPositions(activePlayer, tempPlayfield, x, y);
 
         //set the playfield to the temporary array
         setPlayField(tempPlayfield);
@@ -232,6 +237,7 @@ export default function GameBoard() {
     }
   };
 
+  //check through all the squares to update their state
   const checkSquares = (row, square) => {
     if (playField[row][square] === 'W') {
       // console.log('White:', [i], [j]);
@@ -272,9 +278,7 @@ export default function GameBoard() {
           })}
         </tbody>
       </table>
-      <div>
-        Current Player: {currentPlayer && currentPlayer.W ? 'White' : 'Black'}
-      </div>
+      <h3>White: {currentPlayer && currentPlayer.W ? '<' : '>'} :Black</h3>
     </>
   );
 }
