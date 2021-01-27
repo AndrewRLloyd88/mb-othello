@@ -1,9 +1,11 @@
 .white {
   background-color: white;
+  box-shadow: 2px 1px black;
 }
 
 .black {
   background-color: black;
+  box-shadow: 2px 1px white;
 }
 
 .legal {
@@ -12,4 +14,15 @@
 
 .row {
   color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+.white,
+.black {
+  width: 50%;
+  height: 100%;
+  padding: 25%;
+  border-radius: 50%;
+  margin: 0;
 }

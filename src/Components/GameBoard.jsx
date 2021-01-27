@@ -18,6 +18,9 @@ export default function GameBoard() {
   const [flipPieces, setFlipPieces] = useState([]);
   const [previousPlayer, setPreviousPlayer] = useState('');
   const [endTurn, setEndTurn] = useState(false);
+  const [whiteScore, setWhiteScore] = useState(0);
+  const [blackScore, setBlackScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
 
   //picks a random starting player
   const randomizeStartingPlayer = () => {
@@ -26,6 +29,23 @@ export default function GameBoard() {
       return { W: true, B: false };
     }
     return { W: false, B: true };
+  };
+
+  const countPieces = () => {
+    let whitePieces = 0;
+    let blackPieces = 0;
+    for (const square of playField) {
+      for (const piece of square) {
+        if (piece === 'W') {
+          whitePieces++;
+        }
+        if (piece === 'B') {
+          blackPieces++;
+        }
+      }
+    }
+    setWhiteScore(whitePieces);
+    setBlackScore(blackPieces);
   };
 
   //Helper that calls all the directional checks
@@ -553,18 +573,46 @@ export default function GameBoard() {
   };
 
   useEffect(() => {
-    if (!currentPlayer) {
-      const startingPlayer = randomizeStartingPlayer();
-      setCurrentPlayer(startingPlayer);
-    }
-    if (currentPlayer && !previousPlayer) {
-      setPreviousPlayer(getInactivePlayer(currentPlayer));
-    }
-    if (currentPlayer && legalPos.length === 0) {
-      console.log('setting legal pos for', currentPlayer);
-      const legalMoves = checkLegalMoves();
-      console.log('the legal moves are: ', legalMoves);
-      return setLegalPos(legalMoves);
+    countPieces();
+    if (!gameOver) {
+      if (!currentPlayer) {
+        const startingPlayer = randomizeStartingPlayer();
+        setCurrentPlayer(startingPlayer);
+      }
+      if (currentPlayer && !previousPlayer) {
+        setPreviousPlayer(getInactivePlayer(currentPlayer));
+      }
+      if (currentPlayer && legalPos.length === 0) {
+        console.log('setting legal pos for', currentPlayer);
+        const legalMoves = checkLegalMoves();
+        console.log('the legal moves are: ', legalMoves);
+        //if currentPlayer has no legal moves
+        if (legalMoves.length === 0) {
+          console.log('Checking the other player');
+          const activePlayer = Object.keys(currentPlayer).filter(
+            (k) => currentPlayer[k]
+          );
+          const inactivePlayer = Object.keys(currentPlayer).filter(
+            (k) => !currentPlayer[k]
+          );
+          // console.log('Switching Current Player');
+          let newPlayer = switchPlayer(activePlayer);
+          // console.log('NEWPLAYER VAR currentPlayer is now: ', newPlayer);
+          setCurrentPlayer([]);
+          setCurrentPlayer(newPlayer);
+          console.log(currentPlayer);
+          const legalMoves = checkLegalMoves();
+          console.log('the legal moves are: ', legalMoves);
+          if (legalMoves.length > 0) {
+            console.log('There are still legal moves');
+            return setLegalPos(legalMoves);
+          } else {
+            console.log('in game over');
+            setGameOver(true);
+          }
+        }
+        return setLegalPos(legalMoves);
+      }
     }
     console.log(playField);
   }, [playField, checkSquares, endTurn]);
@@ -602,7 +650,7 @@ export default function GameBoard() {
           {playField.map((rows, rowsidx) => {
             return (
               <tr key={rowsidx} className="row">
-                {rowsidx}
+                {/* {rowsidx} */}
                 {rows.map((square, squareidx) => {
                   return (
                     <Square
@@ -622,7 +670,10 @@ export default function GameBoard() {
           })}
         </tbody>
       </table>
-      <h3>White: {currentPlayer && currentPlayer.W ? '<' : '>'} :Black</h3>
+      <h3>
+        {whiteScore} White: {currentPlayer && currentPlayer.W ? '<' : '>'}{' '}
+        {blackScore} :Black
+      </h3>
       <div>{flipPieces}</div>
     </>
   );

@@ -11,3 +11,51 @@
   justify-content: center;
   width: 100%;
 }
+
+@media screen and (max-width: 640px) {
+  body {
+    transform: scale(0.75);
+  }
+
+  table {
+    transform: scale(1, 0.8);
+  }
+
+  .gameBoard {
+    height: 80%;
+    width: 80%;
+  }
+
+  .white,
+  .black {
+    transform: scale(0.8);
+  }
+
+  .td {
+    height: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  body {
+    transform: scale(0.75);
+  }
+
+  table {
+    transform: scale(1, 0.8);
+  }
+
+  .gameBoard {
+    height: 80%;
+    width: 80%;
+  }
+
+  .white,
+  .black {
+    transform: scale(0.8);
+  }
+
+  .td {
+    height: 100%;
+  }
+}

@@ -27,9 +27,9 @@ export default function Square(props) {
     >
       {!squarestate.isEmpty ? (
         squarestate.playerPiece === 'white' ? (
-          <div className="white">W</div>
+          <div className="white"> </div>
         ) : (
-          <div className="black">B</div>
+          <div className="black"> </div>
         )
       ) : null}
     </td>
