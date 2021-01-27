@@ -315,6 +315,9 @@ export default function GameBoard() {
           tobeflipped.push([i, y]);
           console.log(tobeflipped);
         }
+        if (playField[i + 1][y] === `${activePlayer}`) {
+          return tobeflipped;
+        }
       }
     }
     return tobeflipped;
