@@ -291,6 +291,9 @@ export default function GameBoard() {
           tobeflipped.push([i, y]);
           console.log(tobeflipped);
         }
+        if (playField[i - 1][y] === `${activePlayer}`) {
+          return tobeflipped;
+        }
       }
     }
     return tobeflipped;
@@ -441,7 +444,7 @@ export default function GameBoard() {
 
     // console.log(x, y);
 
-    while (x < 5 && y > 2) {
+    while (x < 5 && y < 5) {
       console.log(x, y);
       // console.log(x, y);
       // console.log(playField[x][y]);
@@ -452,8 +455,8 @@ export default function GameBoard() {
         tobeflipped.push([x + 1, y + 1]);
         console.log(tobeflipped);
       }
-      x--;
-      y--;
+      x++;
+      y++;
       console.log('x is: ', x, 'y is: ', y);
     }
     return tobeflipped;
