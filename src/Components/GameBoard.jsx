@@ -103,20 +103,20 @@ export default function GameBoard() {
     console.log('checkingPosDiag');
     let x = pos[0];
     let y = pos[1];
-    if (x > 2 && y < 6) {
-      return [];
-    }
+    // if (x > 2 && y < 6) {
+    //   return [];
+    // }
 
-    while (x > 2 && y < 6) {
+    while (x > 1 && y < 7) {
       // console.log(x, y);
-      if (playField[x][y] === `${inactivePlayer}`) {
+      if (playField[x - 1][y + 1] === `${inactivePlayer}`) {
         // console.log('next square is W');
-        if (playField[x + 1][y + 1] === 0) {
-          // console.log('legal move PosDiag');
-          return [x + 1, y + 1];
+        if (playField[x - 2][y + 2] === 0) {
+          console.log('legal move PosDiag');
+          return [x - 2, y + 2];
         }
       }
-      x++;
+      x--;
       y++;
     }
     // console.log('no legal move PosDiag');
@@ -140,7 +140,7 @@ export default function GameBoard() {
         // console.log('next square is W');
         console.log('x is: ', x, 'y is:', y);
 
-        if (playField[x + 2][y - 2] === 0) {
+        if (playField[x + 2][y - 2] && playField[x + 2][y - 2] === 0) {
           console.log('legal move NegDiag');
           return [x + 2, y - 2];
         }
