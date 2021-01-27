@@ -17,6 +17,7 @@ export default function GameBoard() {
   const [currentPlayer, setCurrentPlayer] = useState(null);
   const [flipPieces, setFlipPieces] = useState([]);
   const [previousPlayer, setPreviousPlayer] = useState('');
+  const [endTurn, setEndTurn] = useState(false);
 
   //picks a random starting player
   const randomizeStartingPlayer = () => {
@@ -29,8 +30,9 @@ export default function GameBoard() {
 
   //Helper that calls all the directional checks
   const checkDirections = (pos, inactivePlayer) => {
+    console.log('positions are:', pos);
     const legalPositions = [];
-    //check +Y axis
+
     legalPositions.push(checkNegX(pos, inactivePlayer));
     legalPositions.push(checkPosX(pos, inactivePlayer));
     legalPositions.push(checkNegY(pos, inactivePlayer));
@@ -44,16 +46,17 @@ export default function GameBoard() {
   //Positions in arrays are flipped i.e. grid x3,y2 is row2,idx3 on the playField array
   // Right to Left
   const checkNegX = (pos, inactivePlayer) => {
-    // console.log('checkingNegX');
+    console.log('checkingNegX');
+    console.log(pos);
     //count down to col,0
     for (let i = pos[1]; i >= 0; i--) {
-      // console.log(pos[1], i);
+      console.log(pos[0], i);
       //if the next square is the opposite color
-      if (playField[pos[1]][i] === `${inactivePlayer}`) {
+      if (playField[pos[0]][i] === `${inactivePlayer}`) {
         // console.log('next square is W');
-        if (playField[pos[1]][i - 1] === 0) {
+        if (playField[pos[0]][i - 1] === 0) {
           // console.log('legal move NegX');
-          return [pos[1], i - 1];
+          return [pos[0], i - 1];
         }
       }
     }
@@ -63,8 +66,7 @@ export default function GameBoard() {
 
   //Left to right
   const checkPosX = (pos, inactivePlayer) => {
-    // console.log('checkingPosX');
-    //count down to col,0
+    console.log('checkingPosX');
     for (let i = pos[1]; i < 8; i++) {
       // console.log(pos[1], i);
       //if the next square is the opposite color
@@ -82,12 +84,11 @@ export default function GameBoard() {
 
   //Bottom to top
   const checkNegY = (pos, inactivePlayer) => {
-    // console.log('checkingNegY');
-    //count up to 0,row
+    console.log('checkingNegY');
     for (let i = pos[0]; i >= 0; i--) {
       //if the next square is the opposite color
       if (playField[i][pos[1]] === `${inactivePlayer}`) {
-        console.log(playField[i][pos[1]]);
+        // console.log(playField[i][pos[1]]);
         if (playField[i - 1][pos[1]] === 0) {
           // console.log('legal move posY');
           return [i - 1, pos[1]];
@@ -100,8 +101,8 @@ export default function GameBoard() {
 
   //Top to bottom
   const checkPosY = (pos, inactivePlayer) => {
-    // console.log('positions: ', pos);
-    // console.log('checkingPosY');
+    console.log('positions: ', pos);
+    console.log('checkingPosY');
     //count up to 8,row
     for (let i = pos[0]; i < 8; i++) {
       // console.log(i);
@@ -119,29 +120,29 @@ export default function GameBoard() {
   };
 
   //Diagonal left to right
-  const checkPosDiag = (pos, inactivePlayer) => {
-    console.log('checkingPosDiag');
-    //count up to top right corner
-    let x = pos[0];
-    let y = pos[1];
+  // const checkPosDiag = (pos, inactivePlayer) => {
+  //   console.log('checkingPosDiag');
+  //   //count up to top right corner
+  //   let x = pos[0];
+  //   let y = pos[1];
 
-    // console.log(x, y);
+  //   // console.log(x, y);
 
-    while (x > 0 && y < 8) {
-      x--;
-      y++;
-      // console.log(x, y);
-      if (playField[x][y] === `${inactivePlayer}`) {
-        // console.log('next square is W');
-        if (playField[x - 1][y + 1] === 0) {
-          // console.log('legal move PosDiag');
-          return [x - 1, y + 1];
-        }
-      }
-    }
-    // console.log('no legal move PosDiag');
-    return null;
-  };
+  //   while (x > 0 && y < 8) {
+  //     x--;
+  //     y++;
+  //     // console.log(x, y);
+  //     if (playField[x][y] === `${inactivePlayer}`) {
+  //       // console.log('next square is W');
+  //       if (playField[x - 1][y + 1] === 0) {
+  //         // console.log('legal move PosDiag');
+  //         return [x - 1, y + 1];
+  //       }
+  //     }
+  //   }
+  //   // console.log('no legal move PosDiag');
+  //   return null;
+  // };
 
   // const checkNegDiag = (pos, inactivePlayer) => {
   //   console.log(inactivePlayer);
@@ -188,8 +189,12 @@ export default function GameBoard() {
         }
       }
     }
+    console.log(startPos);
+    console.log('InactivePlayer is:', inactivePlayer);
     startPos.forEach((pos) => {
-      legalPos.push(checkDirections(pos, inactivePlayer));
+      console.log(pos);
+      legalPos.push(checkDirections(pos, inactivePlayer[0]));
+      console.log(legalPos);
     });
 
     for (const position of legalPos) {
@@ -199,30 +204,31 @@ export default function GameBoard() {
         }
       }
     }
-    console.log(legalMoves);
     return legalMoves;
   };
 
   const flipPositions = (activePlayer, inactivePlayer, field, x, y) => {
     console.log('in flip');
     const flipArray = [];
-    console.log(x, y);
-    //check from position upwards
-    for (let i = y; i >= 0; i--) {
-      console.log(playField[i][x]);
-      if (playField[i][x] === `${inactivePlayer}`) {
-        flipArray.push([i, x]);
+    console.log('x is: ', x, 'y is: ', y);
+    //check from placed piece upwards
+    for (let i = x; i >= 0; i--) {
+      console.log('x is: ', i, 'y is: ', y);
+      console.log(playField[i][y]);
+      if (playField[i][y] === `${inactivePlayer}`) {
+        flipArray.push([i, y]);
         console.log(flipArray);
       }
     }
+    console.log('These pieces will be flipped: ', flipArray);
     //check from position downwards
-    for (let i = y; i >= 7; i++) {
-      console.log(playField[i][x]);
-      if (playField[i][x] === `${inactivePlayer}`) {
-        flipArray.push([i, x]);
-        console.log(flipArray);
-      }
-    }
+    // for (let i = y; i >= 7; i++) {
+    //   console.log(playField[i][x]);
+    //   if (playField[i][x] === `${inactivePlayer}`) {
+    //     flipArray.push([i, x]);
+    //     console.log(flipArray);
+    //   }
+    // }
 
     for (const pieces of flipArray) {
       field[pieces[0]][pieces[1]] = `${activePlayer}`;
@@ -232,14 +238,24 @@ export default function GameBoard() {
     return field;
   };
 
-  const switchPlayer = (activePlayer) => {
-    console.log('switching player');
-    if (activePlayer === 'W') {
-      return { W: false, B: true };
-    }
-    if (activePlayer === 'B') {
+  const switchPlayer = (previousPlayer) => {
+    console.log('In switchPlayer PreviousPlayer: ', previousPlayer);
+    if (previousPlayer[0] === 'B') {
+      console.log('White should be the current player');
       return { W: true, B: false };
     }
+    if (previousPlayer[0] === 'W') {
+      console.log('Black should be the current player');
+      return { W: false, B: true };
+    }
+  };
+
+  // const assignPreviousPlayer = (currentPlayer) => {
+  //   return setPreviousPlayer(currentPlayer);
+  // };
+
+  const getInactivePlayer = (currentPlayer) => {
+    return Object.keys(currentPlayer).filter((k) => !currentPlayer[k]);
   };
 
   //player places a piece based on square clicked
@@ -256,7 +272,6 @@ export default function GameBoard() {
     console.log('x: ', x, 'y: ', y);
     //check the move is legal
     for (const move of legalPos) {
-      console.log(move[1], move[0]);
       if (move[0] === x && move[1] === y) {
         //create a temporary copy of the playField
         let tempPlayfield = playField;
@@ -271,17 +286,8 @@ export default function GameBoard() {
           x,
           y
         );
-        setPreviousPlayer(currentPlayer);
-        const newPlayer = switchPlayer(activePlayer);
-
-        console.log(currentPlayer);
-
         //set the playfield to the temporary array
-        return (
-          setPlayField(flippedPlayfield),
-          setCurrentPlayer(newPlayer),
-          setLegalPos([])
-        );
+        return setEndTurn(true), setPlayField(flippedPlayfield);
       }
     }
   };
@@ -305,19 +311,47 @@ export default function GameBoard() {
   };
 
   useEffect(() => {
-    console.log(currentPlayer);
     if (!currentPlayer) {
       const startingPlayer = randomizeStartingPlayer();
       setCurrentPlayer(startingPlayer);
     }
+    if (currentPlayer && !previousPlayer) {
+      setPreviousPlayer(getInactivePlayer(currentPlayer));
+    }
     if (currentPlayer && legalPos.length === 0) {
-      console.log(currentPlayer);
+      console.log('setting legal pos for', currentPlayer);
       const legalMoves = checkLegalMoves();
-      console.log(legalMoves);
+      console.log('the legal moves are: ', legalMoves);
       return setLegalPos(legalMoves);
     }
     console.log(playField);
-  }, [currentPlayer, playField, checkSquares]);
+  }, [playField, checkSquares, endTurn]);
+
+  useEffect(() => {
+    // console.log(currentPlayer);
+    // console.log(previousPlayer);
+    // console.log(legalPos);
+
+    if (endTurn) {
+      setEndTurn(false);
+      // console.log('turn has ended');
+      setLegalPos([]);
+      // console.log('switching player');
+      const activePlayer = Object.keys(currentPlayer).filter(
+        (k) => currentPlayer[k]
+      );
+      const inactivePlayer = Object.keys(currentPlayer).filter(
+        (k) => !currentPlayer[k]
+      );
+      // console.log('Switching Current Player');
+      let newPlayer = switchPlayer(activePlayer);
+      // console.log('NEWPLAYER VAR currentPlayer is now: ', newPlayer);
+      setCurrentPlayer([]);
+      setCurrentPlayer(newPlayer);
+      // console.log('STATE currentPlayer is now: ', currentPlayer);
+      // console.log('STATE previousPlayer is now: ', previousPlayer);
+    }
+  }, [endTurn]);
 
   return (
     <>
@@ -335,6 +369,8 @@ export default function GameBoard() {
                       placePiece={placePiece}
                       legalPos={legalPos}
                       playField={playField}
+                      previousPlayer={previousPlayer}
+                      currentPlayer={currentPlayer}
                     />
                   );
                 })}
