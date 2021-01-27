@@ -103,22 +103,21 @@ export default function GameBoard() {
     console.log('checkingPosDiag');
     let x = pos[0];
     let y = pos[1];
+    if (x > 2 && y < 6) {
+      return [];
+    }
 
-    while (x > 0 && y < 7) {
-      x--;
-      y++;
+    while (x > 2 && y < 6) {
       // console.log(x, y);
-      if (x - 1 !== -1) {
-        if (y + 1 !== 8 || x - 1 !== 0) {
-          if (playField[x][y] === `${inactivePlayer}`) {
-            // console.log('next square is W');
-            if (playField[x + 1][y + 1] === 0) {
-              // console.log('legal move PosDiag');
-              return [x + 1, y + 1];
-            }
-          }
+      if (playField[x][y] === `${inactivePlayer}`) {
+        // console.log('next square is W');
+        if (playField[x + 1][y + 1] === 0) {
+          // console.log('legal move PosDiag');
+          return [x + 1, y + 1];
         }
       }
+      x++;
+      y++;
     }
     // console.log('no legal move PosDiag');
     return null;
@@ -135,11 +134,11 @@ export default function GameBoard() {
     console.log(x, y);
 
     //fix this needs a %
-    while (x < 7) {
-      x++;
+    while (x > 6) {
+      x--;
       y--;
       console.log(x, y);
-      if (!y - 1 < 0)
+      if (y - 1 > 0)
         if (x + 1 !== 8 && y - 1 !== -1) {
           if (x + 1 !== 8 && y - 1 !== 0) {
             if (playField[x][y] === `${inactivePlayer}`) {
@@ -253,7 +252,7 @@ export default function GameBoard() {
       console.log(tobeflipped);
       console.log('x is: ', i, 'y is: ', y);
       console.log(playField[i][y]);
-      if (i - 0 !== -1) {
+      if (i - 1 !== -1) {
         if (playField[i - 1][y] === 0) {
           return [];
         }
@@ -602,6 +601,7 @@ export default function GameBoard() {
           {playField.map((rows, rowsidx) => {
             return (
               <tr key={rowsidx} className="row">
+                {rowsidx}
                 {rows.map((square, squareidx) => {
                   return (
                     <Square
