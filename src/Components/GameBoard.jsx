@@ -46,11 +46,11 @@ export default function GameBoard() {
   //Positions in arrays are flipped i.e. grid x3,y2 is row2,idx3 on the playField array
   // Right to Left
   const checkNegX = (pos, inactivePlayer) => {
-    console.log('checkingNegX');
-    console.log(pos);
+    // console.log('checkingNegX');
+    // console.log(pos);
     //count down to col,0
     for (let i = pos[1]; i >= 0; i--) {
-      console.log(pos[0], i);
+      // console.log(pos[0], i);
       //if the next square is the opposite color
       if (playField[pos[0]][i] === `${inactivePlayer}`) {
         // console.log('next square is W');
@@ -66,15 +66,15 @@ export default function GameBoard() {
 
   //Left to right
   const checkPosX = (pos, inactivePlayer) => {
-    console.log('checkingPosX');
+    // console.log('checkingPosX');
     for (let i = pos[1]; i < 8; i++) {
       // console.log(pos[1], i);
       //if the next square is the opposite color
-      if (playField[pos[1]][i] === `${inactivePlayer}`) {
+      if (playField[pos[0]][i] === `${inactivePlayer}`) {
         // console.log('next square is W');
-        if (playField[pos[1]][i + 1] === 0) {
+        if (playField[pos[0]][i + 1] === 0) {
           // console.log('legal move PosX');
-          return [pos[1], i + 1];
+          return [pos[0], i + 1];
         }
       }
     }
@@ -86,6 +86,7 @@ export default function GameBoard() {
   const checkNegY = (pos, inactivePlayer) => {
     console.log('checkingNegY');
     for (let i = pos[0]; i >= 0; i--) {
+      console.log(i, pos[1]);
       //if the next square is the opposite color
       if (playField[i][pos[1]] === `${inactivePlayer}`) {
         // console.log(playField[i][pos[1]]);
@@ -103,9 +104,8 @@ export default function GameBoard() {
   const checkPosY = (pos, inactivePlayer) => {
     console.log('positions: ', pos);
     console.log('checkingPosY');
-    //count up to 8,row
     for (let i = pos[0]; i < 8; i++) {
-      // console.log(i);
+      console.log(i, pos[1]);
       //if the next square is the opposite color
       if (playField[i][pos[1]] === `${inactivePlayer}`) {
         // console.log('next square is W');
@@ -213,6 +213,15 @@ export default function GameBoard() {
     console.log('x is: ', x, 'y is: ', y);
     //check from placed piece upwards
     for (let i = x; i >= 0; i--) {
+      console.log('x is: ', i, 'y is: ', y);
+      console.log(playField[i][y]);
+      if (playField[i][y] === `${inactivePlayer}`) {
+        flipArray.push([i, y]);
+        console.log(flipArray);
+      }
+    }
+
+    for (let i = x; i < 8; i++) {
       console.log('x is: ', i, 'y is: ', y);
       console.log(playField[i][y]);
       if (playField[i][y] === `${inactivePlayer}`) {
