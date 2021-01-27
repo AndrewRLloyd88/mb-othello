@@ -48,91 +48,61 @@ export default function GameBoard() {
   //Positions in arrays are flipped i.e. grid x3,y2 is row2,idx3 on the playField array
   // Right to Left
   const checkNegX = (pos, inactivePlayer) => {
-    // console.log('checkingNegX');
-    // console.log(pos);
-    //count down to col,0
     for (let i = pos[1]; i >= 0; i--) {
-      // console.log(pos[0], i);
-      //if the next square is the opposite color
       if (playField[pos[0]][i] === `${inactivePlayer}`) {
-        // console.log('next square is W');
         if (playField[pos[0]][i - 1] === 0) {
-          // console.log('legal move NegX');
           return [pos[0], i - 1];
         }
       }
     }
-    // console.log('no legal move NegX');
     return null;
   };
 
   //Left to right
   const checkPosX = (pos, inactivePlayer) => {
-    // console.log('checkingPosX');
     for (let i = pos[1]; i < 8; i++) {
-      // console.log(pos[1], i);
-      //if the next square is the opposite color
       if (playField[pos[0]][i] === `${inactivePlayer}`) {
-        // console.log('next square is W');
         if (playField[pos[0]][i + 1] === 0) {
-          // console.log('legal move PosX');
           return [pos[0], i + 1];
         }
       }
     }
-    // console.log('no legal move PosX');
     return null;
   };
 
   //Bottom to top
   const checkNegY = (pos, inactivePlayer) => {
-    // console.log('checkingNegY');
     for (let i = pos[0]; i >= 0; i--) {
-      // console.log(i, pos[1]);
-      //if the next square is the opposite color
       if (i - 1 !== -1) {
         if (playField[i][pos[1]] === `${inactivePlayer}`) {
-          // console.log(playField[i][pos[1]]);
           if (playField[i - 1][pos[1]] === 0) {
-            // console.log('legal move posY');
             return [i - 1, pos[1]];
           }
         }
       }
     }
-    // console.log('no legal move posY');
     return null;
   };
 
   //Top to bottom
   const checkPosY = (pos, inactivePlayer) => {
-    // console.log('positions: ', pos);
-    // console.log('checkingPosY');
     for (let i = pos[0]; i < 8; i++) {
-      // console.log(i, pos[1]);
-      //if the next square is the opposite color
       if (playField[i][pos[1]] === `${inactivePlayer}`) {
-        // console.log('next square is W');
         if (i + 1 !== 8) {
           if (playField[i + 1][pos[1]] === 0) {
-            // console.log('legal move negY');
             return [i + 1, pos[1]];
           }
         }
       }
     }
-    // console.log('no legal move negY');
     return null;
   };
 
-  // Diagonal left to right
+  // Diagonal left to right /
   const checkPosDiag = (pos, inactivePlayer) => {
     console.log('checkingPosDiag');
-    //count up to top right corner
     let x = pos[0];
     let y = pos[1];
-
-    // console.log(x, y);
 
     while (x > 0 && y < 7) {
       x--;
@@ -142,9 +112,9 @@ export default function GameBoard() {
         if (y + 1 !== 8 || x - 1 !== 0) {
           if (playField[x][y] === `${inactivePlayer}`) {
             // console.log('next square is W');
-            if (playField[x - 1][y + 1] === 0) {
+            if (playField[x + 1][y + 1] === 0) {
               // console.log('legal move PosDiag');
-              return [x - 1, y + 1];
+              return [x + 1, y + 1];
             }
           }
         }
@@ -175,9 +145,9 @@ export default function GameBoard() {
             if (playField[x][y] === `${inactivePlayer}`) {
               // console.log('next square is W');
 
-              if (playField[x + 1][y - 1] === 0) {
+              if (playField[x - 1][y - 1] === 0) {
                 // console.log('legal move NegDiag');
-                return [x + 1, y - 1];
+                return [x - 1, y - 1];
               }
             }
           }
@@ -284,6 +254,9 @@ export default function GameBoard() {
       console.log('x is: ', i, 'y is: ', y);
       console.log(playField[i][y]);
       if (i - 0 !== -1) {
+        if (playField[i - 1][y] === 0) {
+          return [];
+        }
         if (
           playField[i][y] === `${inactivePlayer}` &&
           playField[i - 1][y] !== 0
@@ -320,7 +293,7 @@ export default function GameBoard() {
         }
       }
     }
-    return tobeflipped;
+    return [];
   };
 
   const checkFlipNegX = (activePlayer, inactivePlayer, field, x, y) => {
@@ -339,9 +312,12 @@ export default function GameBoard() {
           tobeflipped.push([x, i]);
           console.log(tobeflipped);
         }
+        if (playField[x][i - 1] === `${activePlayer}`) {
+          return tobeflipped;
+        }
       }
     }
-    return tobeflipped;
+    return [];
   };
 
   const checkFlipPosX = (activePlayer, inactivePlayer, field, x, y) => {
@@ -357,9 +333,12 @@ export default function GameBoard() {
           tobeflipped.push([x, i]);
           console.log(tobeflipped);
         }
+        if (playField[x][i + 1] === `${activePlayer}`) {
+          return tobeflipped;
+        }
       }
     }
-    return tobeflipped;
+    return [];
   };
 
   // Diagonal left to right
@@ -381,11 +360,14 @@ export default function GameBoard() {
         tobeflipped.push([x - 1, y + 1]);
         console.log(tobeflipped);
       }
+      if (playField[x - 2][y + 2] === `${activePlayer}`) {
+        return tobeflipped;
+      }
       x--;
       y++;
       console.log('x is: ', x, 'y is: ', y);
     }
-    return tobeflipped;
+    return [];
   };
 
   const checkFlipNegDiag = (activePlayer, inactivePlayer, field, x, y) => {
@@ -408,10 +390,13 @@ export default function GameBoard() {
         tobeflipped.push([x + 1, y - 1]);
         console.log(tobeflipped);
       }
+      if (playField[x + 2][y - 2] === `${activePlayer}`) {
+        return tobeflipped;
+      }
       x++;
       y--;
     }
-    return tobeflipped;
+    return [];
   };
 
   // Diagonal right to top left
@@ -433,11 +418,14 @@ export default function GameBoard() {
         tobeflipped.push([x - 1, y - 1]);
         console.log(tobeflipped);
       }
+      if (playField[x - 2][y - 2] === `${activePlayer}`) {
+        return tobeflipped;
+      }
       x--;
       y--;
       console.log('x is: ', x, 'y is: ', y);
     }
-    return tobeflipped;
+    return [];
   };
 
   const checkFlipRevNegDiag = (activePlayer, inactivePlayer, field, x, y) => {
@@ -458,11 +446,14 @@ export default function GameBoard() {
         tobeflipped.push([x + 1, y + 1]);
         console.log(tobeflipped);
       }
+      if (playField[x + 2][y + 2] === `${activePlayer}`) {
+        return tobeflipped;
+      }
       x++;
       y++;
       console.log('x is: ', x, 'y is: ', y);
     }
-    return tobeflipped;
+    return [];
   };
 
   const flipPositions = (activePlayer, inactivePlayer, field, x, y) => {
