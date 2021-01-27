@@ -9,7 +9,7 @@ export default function Square(props) {
   });
 
   useEffect(() => {
-    console.log('trigger square useEffect');
+    // console.log('trigger square useEffect');
     setSquareState(props.checkSquares(props.squareidx, props.rowsidx));
   }, [props, props.previousPlayer, props.currentPlayer]);
 

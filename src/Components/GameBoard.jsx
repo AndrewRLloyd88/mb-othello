@@ -84,9 +84,9 @@ export default function GameBoard() {
 
   //Bottom to top
   const checkNegY = (pos, inactivePlayer) => {
-    console.log('checkingNegY');
+    // console.log('checkingNegY');
     for (let i = pos[0]; i >= 0; i--) {
-      console.log(i, pos[1]);
+      // console.log(i, pos[1]);
       //if the next square is the opposite color
       if (playField[i][pos[1]] === `${inactivePlayer}`) {
         // console.log(playField[i][pos[1]]);
@@ -102,10 +102,10 @@ export default function GameBoard() {
 
   //Top to bottom
   const checkPosY = (pos, inactivePlayer) => {
-    console.log('positions: ', pos);
-    console.log('checkingPosY');
+    // console.log('positions: ', pos);
+    // console.log('checkingPosY');
     for (let i = pos[0]; i < 8; i++) {
-      console.log(i, pos[1]);
+      // console.log(i, pos[1]);
       //if the next square is the opposite color
       if (playField[i][pos[1]] === `${inactivePlayer}`) {
         // console.log('next square is W');
@@ -190,7 +190,7 @@ export default function GameBoard() {
       }
     }
     console.log(startPos);
-    console.log('InactivePlayer is:', inactivePlayer);
+    // console.log('InactivePlayer is:', inactivePlayer);
     startPos.forEach((pos) => {
       console.log(pos);
       legalPos.push(checkDirections(pos, inactivePlayer[0]));
@@ -207,40 +207,92 @@ export default function GameBoard() {
     return legalMoves;
   };
 
+  //Flipping helpers
+  const checkFlipNegY = (activePlayer, inactivePlayer, field, x, y) => {
+    let tobeflipped = [];
+    //check from placed piece upwards
+    for (let i = x; i >= 0; i--) {
+      console.log(tobeflipped);
+      console.log('x is: ', i, 'y is: ', y);
+      console.log(playField[i][y]);
+      if (
+        playField[i][y] === `${inactivePlayer}` &&
+        playField[i - 1][y] !== 0
+      ) {
+        tobeflipped.push([i, y]);
+        console.log(tobeflipped);
+      }
+    }
+    return tobeflipped;
+  };
+
+  const checkFlipPosY = (activePlayer, inactivePlayer, field, x, y) => {
+    const tobeflipped = [];
+    for (let i = x; i < 8; i++) {
+      //check from placed piece downwards
+      console.log('x is: ', i, 'y is: ', y);
+      console.log(playField[i][y]);
+      //we're only checking for does the next square belong to opponent
+      if (
+        playField[i][y] === `${inactivePlayer}` &&
+        playField[i + 1][y] !== 0
+      ) {
+        tobeflipped.push([i, y]);
+        console.log(tobeflipped);
+      }
+    }
+    return tobeflipped;
+  };
+
+  const checkFlipNegX = (activePlayer, inactivePlayer, field, x, y) => {
+    const tobeflipped = [];
+    for (let i = y; i >= 0; i--) {
+      console.log(x, y);
+      console.log('x is: ', x, 'y is: ', i);
+      //check from placed piece to left
+      console.log(playField[x][i]);
+
+      if (
+        playField[x][i] === `${inactivePlayer}` &&
+        playField[x][i - 1] !== 0
+      ) {
+        tobeflipped.push([x, i]);
+        console.log(tobeflipped);
+      }
+    }
+    return tobeflipped;
+  };
+
+  const checkFlipPosX = (activePlayer, inactivePlayer, field, x, y) => {
+    const tobeflipped = [];
+    // Top to bottom
+    for (let i = y; i < 8; i++) {
+      console.log(playField[x][i]);
+      if (
+        playField[x][i] === `${inactivePlayer}` &&
+        playField[x][i + 1] !== 0
+      ) {
+        tobeflipped.push([x, i]);
+        console.log(tobeflipped);
+      }
+    }
+    return tobeflipped;
+  };
+
   const flipPositions = (activePlayer, inactivePlayer, field, x, y) => {
     console.log('in flip');
     const flipArray = [];
-    console.log('x is: ', x, 'y is: ', y);
-    //check from placed piece upwards
-    for (let i = x; i >= 0; i--) {
-      console.log('x is: ', i, 'y is: ', y);
-      console.log(playField[i][y]);
-      if (playField[i][y] === `${inactivePlayer}`) {
-        flipArray.push([i, y]);
-        console.log(flipArray);
-      }
-    }
 
-    for (let i = x; i < 8; i++) {
-      console.log('x is: ', i, 'y is: ', y);
-      console.log(playField[i][y]);
-      if (playField[i][y] === `${inactivePlayer}`) {
-        flipArray.push([i, y]);
-        console.log(flipArray);
-      }
-    }
+    flipArray.push(checkFlipNegY(activePlayer, inactivePlayer, field, x, y));
+    flipArray.push(checkFlipPosY(activePlayer, inactivePlayer, field, x, y));
+    flipArray.push(checkFlipNegX(activePlayer, inactivePlayer, field, x, y));
+    // flipArray.push(checkFlipPosX(activePlayer, inactivePlayer, field, x, y));
+
     console.log('These pieces will be flipped: ', flipArray);
-    //check from position downwards
-    // for (let i = y; i >= 7; i++) {
-    //   console.log(playField[i][x]);
-    //   if (playField[i][x] === `${inactivePlayer}`) {
-    //     flipArray.push([i, x]);
-    //     console.log(flipArray);
-    //   }
-    // }
 
-    for (const pieces of flipArray) {
-      field[pieces[0]][pieces[1]] = `${activePlayer}`;
+    for (const positions of flipArray) {
+      for (const pieces of positions)
+        field[pieces[0]][pieces[1]] = `${activePlayer}`;
       console.log(field);
     }
     setFlipPieces(flipArray);
@@ -258,10 +310,6 @@ export default function GameBoard() {
       return { W: false, B: true };
     }
   };
-
-  // const assignPreviousPlayer = (currentPlayer) => {
-  //   return setPreviousPlayer(currentPlayer);
-  // };
 
   const getInactivePlayer = (currentPlayer) => {
     return Object.keys(currentPlayer).filter((k) => !currentPlayer[k]);
