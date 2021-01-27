@@ -286,7 +286,7 @@ export default function GameBoard() {
     flipArray.push(checkFlipNegY(activePlayer, inactivePlayer, field, x, y));
     flipArray.push(checkFlipPosY(activePlayer, inactivePlayer, field, x, y));
     flipArray.push(checkFlipNegX(activePlayer, inactivePlayer, field, x, y));
-    // flipArray.push(checkFlipPosX(activePlayer, inactivePlayer, field, x, y));
+    flipArray.push(checkFlipPosX(activePlayer, inactivePlayer, field, x, y));
 
     console.log('These pieces will be flipped: ', flipArray);
 
