@@ -124,33 +124,29 @@ export default function GameBoard() {
   };
 
   const checkNegDiag = (pos, inactivePlayer) => {
-    console.log(inactivePlayer);
-    //count to bottom left corner
-    // console.log('checkingNegDiag');
-    //count down to col,0
+    console.log('checking negative diag');
+
+    //count from piece to bottom left corner
     let x = pos[0];
     let y = pos[1];
-
     console.log(x, y);
+    // if (x > 6 && y > 1) {
+    //   return [];
+    // }
 
     //fix this needs a %
-    while (x > 6) {
-      x--;
-      y--;
-      console.log(x, y);
-      if (y - 1 > 0)
-        if (x + 1 !== 8 && y - 1 !== -1) {
-          if (x + 1 !== 8 && y - 1 !== 0) {
-            if (playField[x][y] === `${inactivePlayer}`) {
-              // console.log('next square is W');
+    while (x < 7 && y > 1) {
+      if (playField[x + 1][y - 1] === `${inactivePlayer}`) {
+        // console.log('next square is W');
+        console.log('x is: ', x, 'y is:', y);
 
-              if (playField[x - 1][y - 1] === 0) {
-                // console.log('legal move NegDiag');
-                return [x - 1, y - 1];
-              }
-            }
-          }
+        if (playField[x + 2][y - 2] === 0) {
+          console.log('legal move NegDiag');
+          return [x + 2, y - 2];
         }
+      }
+      x++;
+      y--;
     }
     // console.log('no legal move NegDiag');
     return null;
@@ -166,16 +162,16 @@ export default function GameBoard() {
 
     console.log(x, y);
 
-    while (x > 1) {
-      x--;
-      y--;
+    while (x > 7 && y > 1) {
       console.log(x, y);
       if (playField[x][y] === `${inactivePlayer}`) {
         if (playField[x - 1][y - 1] === 0) {
           // console.log('legal move NegDiag');
-          return [x - 1, y - 1];
+          return [x + 1, y - 1];
         }
       }
+      x++;
+      y--;
     }
     // console.log('no legal move NegDiag');
     return null;
