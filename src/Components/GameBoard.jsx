@@ -408,6 +408,57 @@ export default function GameBoard() {
     return tobeflipped;
   };
 
+  // Diagonal right to top left
+  const checkFlipRevPosDiag = (activePlayer, inactivePlayer, field, x, y) => {
+    const tobeflipped = [];
+    //there is a + and - diagonal
+    console.log('checking from placed piece to top diagonal left');
+
+    // console.log(x, y);
+
+    while (x > 2) {
+      console.log(x, y);
+      // console.log(x, y);
+      // console.log(playField[x][y]);
+      if (
+        playField[x - 1][y - 1] === `${inactivePlayer}` &&
+        playField[x - 2][y - 2] !== 0
+      ) {
+        tobeflipped.push([x - 1, y - 1]);
+        console.log(tobeflipped);
+      }
+      x--;
+      y--;
+      console.log('x is: ', x, 'y is: ', y);
+    }
+    return tobeflipped;
+  };
+
+  const checkFlipRevNegDiag = (activePlayer, inactivePlayer, field, x, y) => {
+    const tobeflipped = [];
+    //there is a + and - diagonal
+    console.log('checking from placed piece to bottom diagonal right');
+
+    // console.log(x, y);
+
+    while (x < 5 && y > 2) {
+      console.log(x, y);
+      // console.log(x, y);
+      // console.log(playField[x][y]);
+      if (
+        playField[x + 1][y + 1] === `${inactivePlayer}` &&
+        playField[x + 2][y + 2] !== 0
+      ) {
+        tobeflipped.push([x + 1, y + 1]);
+        console.log(tobeflipped);
+      }
+      x--;
+      y--;
+      console.log('x is: ', x, 'y is: ', y);
+    }
+    return tobeflipped;
+  };
+
   const flipPositions = (activePlayer, inactivePlayer, field, x, y) => {
     console.log('in flip');
     const flipArray = [];
@@ -418,6 +469,12 @@ export default function GameBoard() {
     flipArray.push(checkFlipPosX(activePlayer, inactivePlayer, field, x, y));
     flipArray.push(checkFlipPosDiag(activePlayer, inactivePlayer, field, x, y));
     flipArray.push(checkFlipNegDiag(activePlayer, inactivePlayer, field, x, y));
+    flipArray.push(
+      checkFlipRevPosDiag(activePlayer, inactivePlayer, field, x, y)
+    );
+    flipArray.push(
+      checkFlipRevNegDiag(activePlayer, inactivePlayer, field, x, y)
+    );
 
     console.log('These pieces will be flipped: ', flipArray);
 
