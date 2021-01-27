@@ -134,13 +134,18 @@ export default function GameBoard() {
     //   return [];
     // }
 
+    // if(x - 3 > -1 && column + 3 < numColumns) {
+
     //fix this needs a %
-    while (x < 7 && y > 1) {
+    while (x + 2 < 8 && y - 2 > -1) {
       if (playField[x + 1][y - 1] === `${inactivePlayer}`) {
         // console.log('next square is W');
         console.log('x is: ', x, 'y is:', y);
+        // if (!playField[x + 2][y - 2]) {
+        //   return null;
+        // }
 
-        if (playField[x + 2][y - 2] && playField[x + 2][y - 2] === 0) {
+        if (playField[x + 2][y - 2] === 0) {
           console.log('legal move NegDiag');
           return [x + 2, y - 2];
         }
