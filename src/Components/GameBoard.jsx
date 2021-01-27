@@ -226,7 +226,7 @@ export default function GameBoard() {
     let tobeflipped = [];
     //check from placed piece upwards
     console.log('checking from placed piece to top');
-    for (let i = x; i >= 0; i--) {
+    for (let i = x; i >= 1; i--) {
       console.log(tobeflipped);
       console.log('x is: ', i, 'y is: ', y);
       console.log(playField[i][y]);
@@ -311,26 +311,17 @@ export default function GameBoard() {
 
     // console.log(x, y);
 
-    while (x > 0 && y < 7) {
+    while (x > 2) {
       console.log(x, y);
-      console.log(y + 2);
-      // if (x - 3 < 0) {
-      //   return tobeflipped;
-      // }
-
-      // if (y + 3 > 7) {
-      //   return tobeflipped;
-      // }
-      // }
       // console.log(x, y);
       // console.log(playField[x][y]);
-      // if (
-      //   playField[x - 1][y + 1] === `${inactivePlayer}` &&
-      //   playField[x + 2][y - 2] !== 0
-      // ) {
-      //   tobeflipped.push([x, y]);
-      //   console.log(tobeflipped);
-      // }
+      if (
+        playField[x - 1][y + 1] === `${inactivePlayer}` &&
+        playField[x - 2][y + 2] !== 0
+      ) {
+        tobeflipped.push([x - 1, y + 1]);
+        console.log(tobeflipped);
+      }
       x--;
       y++;
       console.log('x is: ', x, 'y is: ', y);
@@ -345,18 +336,17 @@ export default function GameBoard() {
 
     // console.log(x, y);
 
-    while (x < 7) {
+    while (x < 5 && y > 0) {
       if (x + 1 > 7) {
-        console.log(x + 1);
         return tobeflipped;
       }
       console.log(x, y);
 
       if (
         playField[x + 1][y - 1] === `${inactivePlayer}` &&
-        playField[x + 1][y - 1] !== 0
+        playField[x + 2][y - 2] !== 0
       ) {
-        tobeflipped.push([x, y]);
+        tobeflipped.push([x + 1, y - 1]);
         console.log(tobeflipped);
       }
       x++;
@@ -525,6 +515,7 @@ export default function GameBoard() {
         </tbody>
       </table>
       <h3>White: {currentPlayer && currentPlayer.W ? '<' : '>'} :Black</h3>
+      <div>{flipPieces}</div>
     </>
   );
 }
