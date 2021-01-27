@@ -39,6 +39,8 @@ export default function GameBoard() {
     legalPositions.push(checkPosY(pos, inactivePlayer));
     legalPositions.push(checkPosDiag(pos, inactivePlayer));
     legalPositions.push(checkNegDiag(pos, inactivePlayer));
+    legalPositions.push(checkRevPosDiag(pos, inactivePlayer));
+    legalPositions.push(checkRevNegDiag(pos, inactivePlayer));
     return legalPositions;
   };
 
@@ -154,6 +156,7 @@ export default function GameBoard() {
 
   const checkNegDiag = (pos, inactivePlayer) => {
     console.log(inactivePlayer);
+    //count to bottom left corner
     // console.log('checkingNegDiag');
     //count down to col,0
     let x = pos[0];
@@ -179,6 +182,56 @@ export default function GameBoard() {
             }
           }
         }
+    }
+    // console.log('no legal move NegDiag');
+    return null;
+  };
+
+  const checkRevPosDiag = (pos, inactivePlayer) => {
+    console.log(inactivePlayer);
+    //count to bottom right corner
+    // console.log('checkingNegDiag');
+    //count down to col,0
+    let x = pos[0];
+    let y = pos[1];
+
+    console.log(x, y);
+
+    while (x > 1) {
+      x--;
+      y--;
+      console.log(x, y);
+      if (playField[x][y] === `${inactivePlayer}`) {
+        if (playField[x - 1][y - 1] === 0) {
+          // console.log('legal move NegDiag');
+          return [x - 1, y - 1];
+        }
+      }
+    }
+    // console.log('no legal move NegDiag');
+    return null;
+  };
+
+  const checkRevNegDiag = (pos, inactivePlayer) => {
+    console.log(inactivePlayer);
+    //count to bottom right corner
+    // console.log('checkingNegDiag');
+    //count down to col,0
+    let x = pos[0];
+    let y = pos[1];
+
+    console.log(x, y);
+
+    while (x < 6) {
+      x++;
+      y++;
+      console.log(x, y);
+      if (playField[x][y] === `${inactivePlayer}`) {
+        if (playField[x + 1][y + 1] === 0) {
+          // console.log('legal move NegDiag');
+          return [x + 1, y + 1];
+        }
+      }
     }
     // console.log('no legal move NegDiag');
     return null;
