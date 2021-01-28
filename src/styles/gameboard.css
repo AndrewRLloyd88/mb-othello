@@ -2,8 +2,9 @@
   width: 50%;
 }
 
-table {
+tbody {
   background: rgb(3, 3, 3);
+  background-color: black;
   border-spacing: 1px;
   width: 500px;
   height: 500px;
@@ -14,4 +15,8 @@ td {
   padding: 5px;
   height: 50px;
   width: 50px;
+}
+
+table {
+  background: black;
 }
